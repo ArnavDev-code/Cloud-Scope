@@ -1,5 +1,5 @@
 // Change this if your FastAPI server uses a different host or port.
-const API_URL = "http://127.0.0.1:8000/predict";
+const API_URL = "https://cloud-scope.onrender.com/predict";
 const form = document.getElementById("predictionForm");
 const submitButton = document.getElementById("submitButton");
 const emptyState = document.getElementById("emptyState");
