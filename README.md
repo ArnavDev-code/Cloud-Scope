@@ -1,6 +1,6 @@
-# Cloud Scope Intelligence
+# CloudScope Intelligence
 
-CloudCost Intelligence is an end-to-end cloud billing cost estimator. It combines
+CloudScope Intelligence is an end-to-end cloud billing cost estimator. It combines
 historical billing data, exploratory analysis, feature engineering, a quantile
 XGBoost model, and a small web application. A user enters a prospective resource
 usage profile and receives a calibrated **low**, **median**, and **high** cost
@@ -8,6 +8,19 @@ estimate in INR.
 
 > The result is a model-informed planning range, not a provider invoice or a
 > billing guarantee.
+
+## Live application
+
+The project is deployed as a static frontend and a separate FastAPI backend:
+
+- **Frontend:** [cloud-scope-frontend.vercel.app](https://cloud-scope-frontend.vercel.app/)
+- **Backend API:** [cloud-scope.onrender.com](https://cloud-scope.onrender.com/)
+- **API documentation:** [Swagger UI](https://cloud-scope.onrender.com/docs)
+- **Prediction endpoint:** `https://cloud-scope.onrender.com/predict`
+
+Open the frontend link to use the estimator. The browser sends prediction
+requests to the deployed backend API; no local server is required for the live
+application.
 
 ## What the project does
 
@@ -311,6 +324,29 @@ python -m http.server 5500 --directory frontend
 Open `http://127.0.0.1:5500`. The frontend is intentionally static and expects
 the backend at `http://127.0.0.1:8000/predict`; update `API_URL` in
 [`frontend/app.js`](frontend/app.js) if the backend address changes.
+
+## Deployment
+
+The production deployment uses two services:
+
+1. **Vercel** serves the static files in [`frontend/`](frontend/).
+2. **Render** runs the FastAPI application in [`backend/`](backend/) and serves
+   the serialized model from [`model/`](model/).
+
+The frontend's production API URL is configured in
+[`frontend/app.js`](frontend/app.js). For a different deployment, update
+`API_URL` to point to the deployed backend's `/predict` endpoint and ensure the
+backend CORS configuration allows the frontend origin.
+
+The deployed backend exposes:
+
+- `GET /` — health check
+- `GET /docs` — Swagger UI
+- `POST /predict` — cost prediction
+
+For production hardening, replace the current wildcard CORS policy with the
+specific Vercel frontend origin and add authentication or rate limiting before
+using the API with sensitive or high-volume workloads.
 
 ### Example request
 
