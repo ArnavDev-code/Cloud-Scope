@@ -1,129 +1,565 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0b1020" />
-  <title>CloudScope - Cost Intelligence</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8f8f4">
+  <meta
+    name="description"
+    content="CloudScope Intelligence estimates cloud infrastructure costs using quantile XGBoost and calibrated prediction intervals trained on 124,275 historical billing records."
+  >
+  <title>CloudScope Intelligence — Cloud Cost Estimator</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Manrope:wght@400;500;600;650;700;750;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
 </head>
+
 <body>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <a class="brand" href="#" aria-label="CloudCost home">
-        <span class="brand-mark"><span></span><span></span><span></span></span>
-        <span>Cloud<span class="brand-light">Scope</span></span>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="wordmark" href="#" aria-label="CloudScope home">
+        <span class="wordmark-symbol" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M5 7H27M5 16H27M5 25H27" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="11" cy="7" r="2.5" fill="#F8F8F4" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="21" cy="16" r="2.5" fill="#F8F8F4" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="14" cy="25" r="2.5" fill="#F8F8F4" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+        </span>
+        <span>CloudScope<span class="wordmark-light"> Intelligence</span></span>
       </a>
-      <div class="workspace-label">WORKSPACE</div>
-      <nav class="side-nav">
-        <a class="nav-item active" href="#overview"><span class="nav-icon">▦</span> Cost estimator</a>
-        <a class="nav-item" href="#how-it-works"><span class="nav-icon">◷</span> How it works</a>
-      </nav>
-      <div class="sidebar-bottom">
-        <div class="status-card">
-          <span class="status-dot"></span>
-        <div><strong>Prediction API</strong><small id="apiStatus">Ready to connect</small></div>
-        </div>
-        <div class="sidebar-note">A smarter view of your cloud spend.</div>
-        <div class="sidebar-footer">CLOUD SCOPE INTELLIGENCE <span>v1.0</span></div>
+
+      <a
+        class="header-link"
+        href="https://github.com/ArnavDev-code/CloudScope-Intelligence"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        View source
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M7 4H16V13M15.5 4.5L5 15" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero page-shell" aria-labelledby="page-title">
+      <div class="eyebrow">
+        <span class="eyebrow-line" aria-hidden="true"></span>
+        CLOUD COST ESTIMATION
       </div>
-    </aside>
 
-    <main class="main-content" id="overview">
-      <header class="topbar">
-        <div class="breadcrumb">Workspace <span>/</span> <strong>Cost estimator</strong></div>
-        <div class="topbar-right"><span class="secure-badge"><span>◆</span> ML-powered estimate</span><div class="avatar">CC</div></div>
-      </header>
+      <h1 id="page-title">
+        Estimate cloud spend<br class="desktop-break">
+        as a <span class="headline-accent">range,</span> not a guess.
+      </h1>
 
-      <section class="hero">
-        <div class="hero-copy">
-          <div class="eyebrow"><span class="eyebrow-line"></span> CLOUD COST INTELLIGENCE</div>
-          <h1>Know your cloud costs<br><span>before they surprise you.</span></h1>
-          <p>Estimate resource spend with a machine-learning model and get a calibrated range to help plan your cloud usage.</p>
-          <div class="hero-pills"><span>✦ XGBoost-powered</span><span>◉ Low · Median · High</span><span>↗ INR estimates</span></div>
-        </div>
-        <div class="hero-visual" aria-hidden="true">
-          <div class="orb orb-one"></div><div class="orb orb-two"></div>
-          <div class="visual-grid"></div>
-          <div class="floating-chip chip-top"><span class="chip-dot"></span> Cost forecast <b>LIVE</b></div>
-          <div class="visual-center"><div class="cloud-icon">☁</div><div class="visual-caption">CLOUD<br><b>SPEND</b></div></div>
-          <div class="floating-chip chip-bottom"><span class="mini-bars"><i></i><i></i><i></i><i></i><i></i></span> Predict with confidence</div>
-        </div>
-      </section>
+      <p class="hero-description">
+        Explore a prospective usage profile and see its estimated monthly cost
+        in Indian rupees. Built on quantile machine learning trained with
+        <strong>124,275 historical billing records.</strong>
+      </p>
 
-      <section class="content-grid">
-        <div class="form-panel panel">
+      <div class="hero-footnote">
+        <span class="footnote-mark" aria-hidden="true">i</span>
+        <span>Model-informed estimates for planning. Not a provider quote or bill.</span>
+      </div>
+    </section>
+
+    <section class="estimator-section page-shell" aria-label="Cloud cost estimator">
+      <div class="estimator-grid">
+        <section class="form-panel" aria-labelledby="form-heading">
           <div class="panel-heading">
-            <div><div class="section-kicker">CONFIGURATION</div><h2>Resource details</h2><p>Enter the expected usage profile to calculate an estimate.</p></div>
-            <div class="step-badge">01 <span>/ 02</span></div>
+            <div>
+              <span class="section-index">01 / INPUT</span>
+              <h2 id="form-heading">Usage profile</h2>
+            </div>
+            <span class="required-note">* Required</span>
           </div>
-          <form id="predictionForm">
-            <div class="form-section-title"><span class="section-number">1</span> Resource configuration</div>
-            <div class="form-grid">
-              <label class="field"><span>Cloud service</span>
+
+          <form id="estimate-form" novalidate>
+            <fieldset class="form-group">
+              <legend>Resource</legend>
+
+              <div class="field">
+                <label for="service_name">Cloud service <span class="required">*</span></label>
                 <select id="service_name" name="service_name" required>
-                  <option value="Compute Engine">Compute Engine</option><option value="Cloud Storage">Cloud Storage</option><option value="Cloud SQL">Cloud SQL</option><option value="Cloud Run">Cloud Run</option><option value="Cloud Functions">Cloud Functions</option><option value="BigQuery">BigQuery</option><option value="Cloud CDN">Cloud CDN</option><option value="Cloud Build">Cloud Build</option><option value="Cloud Dataflow">Cloud Dataflow</option><option value="Cloud Dataproc">Cloud Dataproc</option><option value="Cloud Filestore">Cloud Filestore</option><option value="Cloud Logging">Cloud Logging</option><option value="Cloud Memorystore">Cloud Memorystore</option><option value="Cloud Monitoring">Cloud Monitoring</option><option value="Cloud Pub/Sub">Cloud Pub/Sub</option><option value="Cloud Scheduler">Cloud Scheduler</option><option value="Cloud Spanner">Cloud Spanner</option><option value="Cloud Tasks">Cloud Tasks</option><option value="Cloud Armor">Cloud Armor</option><option value="Artifact Registry">Artifact Registry</option><option value="App Engine">App Engine</option><option value="Dialogflow">Dialogflow</option><option value="Secret Manager">Secret Manager</option>
-                </select><small>Choose the closest service category.</small>
-              </label>
-              <label class="field"><span>Region / zone</span>
-                <select id="region_zone" name="region_zone" required><option value="asia-east1">asia-east1</option><option value="asia-south1">asia-south1</option><option value="europe-west1">europe-west1</option><option value="us-central1">us-central1</option><option value="us-east1">us-east1</option><option value="us-west1">us-west1</option></select>
-                <small>Use a region represented in the training data.</small>
-              </label>
-              <label class="field"><span>Usage quantity</span><div class="input-with-icon"><input id="usage_quantity" name="usage_quantity" type="number" min="0" step="any" placeholder="e.g. 120" required /><span class="input-symbol">#</span></div></label>
-              <label class="field"><span>Usage unit</span>
-                <select id="usage_unit" name="usage_unit" required><option value="Hours">Hours</option><option value="GB">GB</option><option value="Requests">Requests</option></select>
-                <small>Used for unit-specific calibration.</small>
-              </label>
+                  <option value="Compute Engine" selected>Compute Engine</option>
+                  <option value="Cloud Storage">Cloud Storage</option>
+                  <option value="Cloud SQL">Cloud SQL</option>
+                  <option value="Cloud Run">Cloud Run</option>
+                  <option value="Cloud Functions">Cloud Functions</option>
+                  <option value="BigQuery">BigQuery</option>
+                  <option value="Cloud CDN">Cloud CDN</option>
+                  <option value="Cloud Build">Cloud Build</option>
+                  <option value="Cloud Dataflow">Cloud Dataflow</option>
+                  <option value="Cloud Dataproc">Cloud Dataproc</option>
+                  <option value="Cloud Filestore">Cloud Filestore</option>
+                  <option value="Cloud Logging">Cloud Logging</option>
+                  <option value="Cloud Memorystore">Cloud Memorystore</option>
+                  <option value="Cloud Monitoring">Cloud Monitoring</option>
+                  <option value="Cloud Pub/Sub">Cloud Pub/Sub</option>
+                  <option value="Cloud Scheduler">Cloud Scheduler</option>
+                  <option value="Cloud Spanner">Cloud Spanner</option>
+                  <option value="Cloud Tasks">Cloud Tasks</option>
+                  <option value="Cloud Armor">Cloud Armor</option>
+                  <option value="Artifact Registry">Artifact Registry</option>
+                  <option value="App Engine">App Engine</option>
+                  <option value="Dialogflow">Dialogflow</option>
+                  <option value="Secret Manager">Secret Manager</option>
+                </select>
+                <span class="field-error" id="service_name-error" aria-live="polite"></span>
+              </div>
+
+              <div class="field">
+                <label for="region_zone">Region <span class="required">*</span></label>
+                <select id="region_zone" name="region_zone" required>
+                  <option value="asia-east1">asia-east1</option>
+                  <option value="asia-south1" selected>asia-south1</option>
+                  <option value="europe-west1">europe-west1</option>
+                  <option value="us-central1">us-central1</option>
+                  <option value="us-east1">us-east1</option>
+                  <option value="us-west1">us-west1</option>
+                </select>
+                <span class="field-error" id="region_zone-error" aria-live="polite"></span>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label for="usage_quantity">Usage quantity <span class="required">*</span></label>
+                  <input
+                    id="usage_quantity"
+                    name="usage_quantity"
+                    type="number"
+                    min="0"
+                    step="any"
+                    value="120"
+                    inputmode="decimal"
+                    required
+                    aria-describedby="usage_quantity-error"
+                  >
+                  <span class="field-error" id="usage_quantity-error" aria-live="polite"></span>
+                </div>
+
+                <div class="field">
+                  <label for="usage_unit">Billing unit <span class="required">*</span></label>
+                  <select id="usage_unit" name="usage_unit" required>
+                    <option value="Hours" selected>Hours</option>
+                    <option value="GB">GB</option>
+                    <option value="Requests">Requests</option>
+                  </select>
+                  <span class="field-error" id="usage_unit-error" aria-live="polite"></span>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-group context-group">
+              <legend>Usage context</legend>
+              <p class="group-description">
+                Resource utilization and usage timing help describe the workload.
+                Utilization fields are optional.
+              </p>
+
+              <div class="field-row">
+                <div class="field">
+                  <label for="cpu_utilization">CPU utilization <span class="unit-label">%</span></label>
+                  <input
+                    id="cpu_utilization"
+                    name="cpu_utilization"
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="any"
+                    value="65"
+                    inputmode="decimal"
+                    aria-describedby="cpu_utilization-error"
+                  >
+                  <span class="field-error" id="cpu_utilization-error" aria-live="polite"></span>
+                </div>
+
+                <div class="field">
+                  <label for="memory_utilization">Memory utilization <span class="unit-label">%</span></label>
+                  <input
+                    id="memory_utilization"
+                    name="memory_utilization"
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="any"
+                    value="72"
+                    inputmode="decimal"
+                    aria-describedby="memory_utilization-error"
+                  >
+                  <span class="field-error" id="memory_utilization-error" aria-live="polite"></span>
+                </div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label for="network_inbound_GB">Inbound network <span class="unit-label">GB</span></label>
+                  <input
+                    id="network_inbound_GB"
+                    name="network_inbound_GB"
+                    type="number"
+                    min="0"
+                    step="any"
+                    value="10"
+                    inputmode="decimal"
+                    required
+                    aria-describedby="network_inbound_GB-error"
+                  >
+                  <span class="field-error" id="network_inbound_GB-error" aria-live="polite"></span>
+                </div>
+
+                <div class="field">
+                  <label for="usage_duration_hours">Duration <span class="unit-label">hours</span></label>
+                  <input
+                    id="usage_duration_hours"
+                    name="usage_duration_hours"
+                    type="number"
+                    min="0"
+                    step="any"
+                    value="24"
+                    inputmode="decimal"
+                    required
+                    aria-describedby="usage_duration_hours-error"
+                  >
+                  <span class="field-error" id="usage_duration_hours-error" aria-live="polite"></span>
+                </div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label for="usage_month">Usage month</label>
+                  <select id="usage_month" name="usage_month">
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                  </select>
+                  <span class="field-error" id="usage_month-error" aria-live="polite"></span>
+                </div>
+
+                <div class="field">
+                  <label for="usage_day_of_week">Day of week</label>
+                  <select id="usage_day_of_week" name="usage_day_of_week">
+                    <option value="0" selected>Monday</option>
+                    <option value="1">Tuesday</option>
+                    <option value="2">Wednesday</option>
+                    <option value="3">Thursday</option>
+                    <option value="4">Friday</option>
+                    <option value="5">Saturday</option>
+                    <option value="6">Sunday</option>
+                  </select>
+                  <span class="field-error" id="usage_day_of_week-error" aria-live="polite"></span>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="form-actions">
+              <button class="button button-primary submit-button" id="submit-button" type="submit">
+                <span class="button-spinner" aria-hidden="true"></span>
+                <span class="button-label">Estimate cost</span>
+                <svg class="button-arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M4 10H16M10 4L16 10L10 16" stroke="currentColor" stroke-width="1.6"/>
+                </svg>
+              </button>
+
+              <div class="secondary-actions">
+                <button class="text-button" id="load-example" type="button">Load example</button>
+                <span class="action-divider" aria-hidden="true"></span>
+                <button class="text-button" id="reset-form" type="button">Reset</button>
+              </div>
             </div>
 
-            <div class="form-section-title section-spaced"><span class="section-number">2</span> Resource utilization <span class="optional-label">Optional metrics can be left blank</span></div>
-            <div class="form-grid three-col">
-              <label class="field"><span>CPU utilization <em>%</em></span><input id="cpu_utilization" name="cpu_utilization" type="number" min="0" max="100" step="any" placeholder="e.g. 65" /></label>
-              <label class="field"><span>Memory utilization <em>%</em></span><input id="memory_utilization" name="memory_utilization" type="number" min="0" max="100" step="any" placeholder="e.g. 72" /></label>
-              <label class="field"><span>Inbound network <em>GB</em></span><input id="network_inbound_GB" name="network_inbound_GB" type="number" min="0" step="any" value="0" required /></label>
-              <label class="field"><span>Usage duration <em>hours</em></span><input id="usage_duration_hours" name="usage_duration_hours" type="number" min="0" step="any" placeholder="e.g. 24" required /></label>
-              <label class="field"><span>Usage month</span><select id="usage_month" name="usage_month" required>
-                <option value="1">January</option><option value="2">February</option><option value="3">March</option><option value="4">April</option><option value="5">May</option><option value="6">June</option><option value="7">July</option><option value="8">August</option><option value="9">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option>
-              </select></label>
-              <label class="field"><span>Day of week</span><select id="usage_day_of_week" name="usage_day_of_week" required><option value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option><option value="3">Thursday</option><option value="4">Friday</option><option value="5">Saturday</option><option value="6">Sunday</option></select></label>
-            </div>
-            <div class="form-note"><span class="info-icon">i</span><span>For best results, use the same units, categories, and encoding conventions as per model.</span></div>
-            <div class="form-actions"><button type="reset" class="reset-button" id="resetButton">Reset fields</button><button type="submit" class="primary-button" id="submitButton"><span>Estimate cloud cost</span><span class="button-arrow">↗</span></button></div>
+            <p class="form-feedback" id="form-feedback" role="status" aria-live="polite"></p>
           </form>
+        </section>
+
+        <aside class="result-panel" aria-labelledby="result-heading">
+          <div class="result-panel-top">
+            <div>
+              <span class="section-index">02 / ESTIMATE</span>
+              <h2 id="result-heading">Estimated cost</h2>
+            </div>
+            <span class="result-currency">INR</span>
+          </div>
+
+          <div class="result-content" id="result-content" aria-live="polite" aria-atomic="true">
+            <div class="empty-result" id="empty-result">
+              <div class="empty-illustration" aria-hidden="true">
+                <svg viewBox="0 0 180 116" fill="none">
+                  <rect x="18" y="15" width="144" height="86" rx="2" stroke="currentColor" stroke-width="1.2"/>
+                  <path d="M18 37H162" stroke="currentColor" stroke-width="1.2"/>
+                  <circle cx="29" cy="26" r="2" fill="currentColor"/>
+                  <circle cx="37" cy="26" r="2" fill="currentColor" opacity=".45"/>
+                  <circle cx="45" cy="26" r="2" fill="currentColor" opacity=".2"/>
+                  <path d="M36 76H54M63 65H81M90 82H108M117 57H135" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".45"/>
+                  <path d="M36 65H54M63 76H81M90 57H108M117 76H135" stroke="#17695E" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M36 87H54M63 87H81M90 87H108M117 87H135" stroke="currentColor" stroke-width="1" opacity=".18"/>
+                </svg>
+              </div>
+
+              <h3>Your estimate will appear here.</h3>
+              <p>
+                Choose a cloud service, describe its usage, and run an estimate
+                to see the predicted cost range.
+              </p>
+
+              <div class="empty-divider"></div>
+
+              <div class="empty-detail">
+                <span class="empty-detail-mark" aria-hidden="true"></span>
+                <span>Three quantiles, one more useful view of cost.</span>
+              </div>
+            </div>
+
+            <div class="loading-result" id="loading-result" hidden>
+              <div class="loading-rule" aria-hidden="true"></div>
+              <p class="loading-title" id="loading-title">Calculating your estimate</p>
+              <p class="loading-description" id="loading-description">
+                Evaluating the usage profile.
+              </p>
+              <div class="loading-track" aria-hidden="true">
+                <span></span>
+              </div>
+            </div>
+
+            <div class="estimate-result" id="estimate-result" hidden>
+              <p class="result-label">Predicted median cost</p>
+              <div class="median-amount" id="median-amount">₹0.00</div>
+              <p class="median-caption">50th percentile estimate</p>
+
+              <div class="range-section">
+                <div class="range-heading">
+                  <span>Estimated cost range</span>
+                  <span class="range-percentiles">P05 — P95</span>
+                </div>
+
+                <div
+                  class="range-track"
+                  id="range-track"
+                  role="img"
+                  aria-label="Estimated cost range"
+                >
+                  <div class="range-fill" id="range-fill"></div>
+                  <span class="range-marker" id="range-marker"></span>
+                </div>
+
+                <div class="range-endpoints">
+                  <div>
+                    <span class="endpoint-label">LOW · P05</span>
+                    <span class="endpoint-value" id="low-amount">₹0.00</span>
+                  </div>
+                  <div class="endpoint-high">
+                    <span class="endpoint-label">HIGH · P95</span>
+                    <span class="endpoint-value" id="high-amount">₹0.00</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="interval-note">
+                <span class="note-indicator" aria-hidden="true"></span>
+                <p>
+                  Calibrated 90% planning interval. This is a model estimate,
+                  not a bill or guaranteed price.
+                </p>
+              </div>
+
+              <div class="result-metadata">
+                <div class="metadata-row">
+                  <span>Cloud service</span>
+                  <strong id="result-service">Compute Engine</strong>
+                </div>
+                <div class="metadata-row">
+                  <span>Billing unit</span>
+                  <strong id="result-unit">Hours</strong>
+                </div>
+                <div class="metadata-row">
+                  <span>Region</span>
+                  <strong id="result-region">asia-south1</strong>
+                </div>
+              </div>
+
+              <button class="button button-outline" id="run-another" type="button">
+                Run another estimate
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M4 10H16M10 4L16 10L10 16" stroke="currentColor" stroke-width="1.6"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="error-result" id="error-result" hidden>
+              <div class="error-mark" aria-hidden="true">!</div>
+              <h3 id="error-title">We couldn't complete the estimate.</h3>
+              <p id="error-description" role="alert" aria-live="assertive">
+                Please check your inputs and try again.
+              </p>
+              <button class="button button-outline" id="retry-estimate" type="button">
+                Try again
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M4 10H16M10 4L16 10L10 16" stroke="currentColor" stroke-width="1.6"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="result-foot">
+            <span class="result-foot-dot" aria-hidden="true"></span>
+            <span>All estimates displayed in Indian rupees.</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="model-section page-shell" aria-labelledby="model-heading">
+      <div class="section-topline">
+        <span class="section-index">03 / METHODOLOGY</span>
+        <span class="section-topline-note">Behind the estimate</span>
+      </div>
+
+      <div class="model-intro">
+        <div>
+          <h2 id="model-heading">Cloud costs aren't evenly distributed.</h2>
+        </div>
+        <div class="model-explanation">
+          <p>
+            A small number of expensive workloads can pull the average far above
+            what a typical workload costs. Here, the historical mean is about
+            ₹117.9K, while the median is about ₹46.2K.
+          </p>
+          <p>
+            Instead of relying on one average, CloudScope predicts the 5th,
+            50th, and 95th cost percentiles, then calibrates the interval using
+            Conformalized Quantile Regression (CQR). The result is a useful
+            planning range that makes uncertainty visible.
+          </p>
+        </div>
+      </div>
+
+      <div class="stats-grid" aria-label="Model performance statistics">
+        <article class="stat-card">
+          <span class="stat-label">TRAINING DATA</span>
+          <strong class="stat-value">124,275</strong>
+          <span class="stat-description">Historical billing records</span>
+        </article>
+
+        <article class="stat-card stat-card-accent">
+          <span class="stat-label">INTERVAL COVERAGE</span>
+          <strong class="stat-value">90.4<span class="stat-suffix">%</span></strong>
+          <span class="stat-description">Held-out calibration results</span>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-label">MEDIAN MODEL FIT</span>
+          <strong class="stat-value">0.665</strong>
+          <span class="stat-description">R² in log space</span>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-label">PREDICTION METHOD</span>
+          <strong class="stat-value stat-value-method">P05 / P50 / P95</strong>
+          <span class="stat-description">Quantile XGBoost + CQR</span>
+        </article>
+      </div>
+
+      <div class="pipeline-section">
+        <div class="pipeline-heading">
+          <h3>From billing records to an estimate</h3>
+          <p>The modelling and serving workflow</p>
         </div>
 
-        <aside class="results-column">
-          <div class="result-panel panel" id="resultPanel">
-            <div class="result-topline"><span class="result-icon">✦</span><span>YOUR COST FORECAST</span><span class="result-status" id="resultStatus">AWAITING INPUT</span></div>
-            <div class="result-empty" id="emptyState">
-              <div class="empty-illustration"><div class="empty-ring"></div><div class="empty-cloud">☁</div><span class="spark spark-a">✦</span><span class="spark spark-b">✧</span></div>
-              <h3>Your estimate will appear here</h3><p>Complete the resource details and run a prediction to see your expected cloud cost range.</p>
-              <div class="empty-checks"><span>✓ No guesswork</span><span>✓ Model-based forecast</span></div>
-            </div>
-            <div class="result-data hidden" id="resultData">
-              <div class="median-label">PREDICTED MEDIAN COST</div>
-              <div class="median-value"><span>₹</span><strong id="medianCost">—</strong></div>
-              <div class="range-caption">Estimated cost range</div>
-              <div class="range-track"><div class="range-line"></div><span class="range-pin pin-low"></span><span class="range-pin pin-mid"></span><span class="range-pin pin-high"></span></div>
-              <div class="range-values"><div><small>LOW ESTIMATE</small><strong id="lowCost">₹—</strong></div><div class="range-divider"></div><div><small>HIGH ESTIMATE</small><strong id="highCost">₹—</strong></div></div>
-              <div class="range-note"><span>ⓘ</span><span>This range reflects your model's calibrated estimate, not a guaranteed bill.</span></div>
-              <div class="result-meta"><div><span>Service</span><strong id="outService">—</strong></div><div><span>Billing unit</span><strong id="outUnit">—</strong></div></div>
-              <button class="secondary-button" id="newEstimateButton" type="button">Run another estimate <span>↗</span></button>
-            </div>
+        <div class="pipeline" aria-label="Data to cleaning and EDA to Quantile XGBoost to CQR calibration to FastAPI to this app">
+          <div class="pipeline-step">
+            <span class="pipeline-number">01</span>
+            <span class="pipeline-name">Data</span>
           </div>
-          <div class="tip-card"><div class="tip-icon">✳</div><div><strong>Make your estimate more useful</strong><p>Use realistic usage quantities and the exact region/service labels represented in your training dataset.</p></div></div>
-          <div class="api-card"><div class="api-card-top"><span class="api-indicator"></span><strong>API connection</strong><span id="connectionLabel">Not tested</span></div><div class="api-url" id="apiUrlLabel">http://127.0.0.1:8000/predict</div><button type="button" id="testApiButton" class="text-button">Test connection <span>→</span></button></div>
-        </aside>
-      </section>
+          <span class="pipeline-connector" aria-hidden="true"></span>
+          <div class="pipeline-step">
+            <span class="pipeline-number">02</span>
+            <span class="pipeline-name">Cleaning &amp; EDA</span>
+          </div>
+          <span class="pipeline-connector" aria-hidden="true"></span>
+          <div class="pipeline-step">
+            <span class="pipeline-number">03</span>
+            <span class="pipeline-name">Quantile XGBoost</span>
+          </div>
+          <span class="pipeline-connector" aria-hidden="true"></span>
+          <div class="pipeline-step">
+            <span class="pipeline-number">04</span>
+            <span class="pipeline-name">CQR calibration</span>
+          </div>
+          <span class="pipeline-connector" aria-hidden="true"></span>
+          <div class="pipeline-step">
+            <span class="pipeline-number">05</span>
+            <span class="pipeline-name">FastAPI</span>
+          </div>
+          <span class="pipeline-connector" aria-hidden="true"></span>
+          <div class="pipeline-step pipeline-step-final">
+            <span class="pipeline-number">06</span>
+            <span class="pipeline-name">This app</span>
+          </div>
+        </div>
+      </div>
 
-      <section class="bottom-strip" id="how-it-works"><div class="bottom-icon">⌁</div><div><strong>How the estimate works</strong><p>Your inputs are sent to the prediction API, which returns low, median, and high cost estimates from trained model.</p></div><div class="bottom-tag">MODEL-INFORMED · NOT A BILLING GUARANTEE</div></section>
-      <footer><span>© 2026 CloudScope Intelligence</span><span>Built for clearer cloud cost planning</span></footer>
-    </main>
-  </div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="app.js"></script>
+      <aside class="limitations" aria-labelledby="limitations-heading">
+        <div class="limitations-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M12 10.5V16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="12" cy="7.5" r=".9" fill="currentColor"/>
+          </svg>
+        </div>
+        <div>
+          <h3 id="limitations-heading">Limitations worth knowing</h3>
+          <p>
+            The training data covers 2022–2023 and may not reflect current
+            cloud-provider pricing, product changes, discounts, taxes, or
+            regional price differences. Historical interval coverage is a
+            validation result, not a guarantee for every future workload.
+            Always verify actual charges with your cloud provider before making
+            spending commitments.
+          </p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner page-shell">
+      <a class="footer-wordmark" href="#" aria-label="CloudScope home">CloudScope<span> Intelligence</span></a>
+      <p>Independent machine learning project. Estimates are for planning only.</p>
+      <div class="footer-right">
+        <a
+          href="https://github.com/ArnavDev-code/CloudScope-Intelligence"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M7 4H16V13M15.5 4.5L5 15" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </a>
+        <span>© <span id="copyright-year">2026</span></span>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
